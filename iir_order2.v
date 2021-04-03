@@ -23,9 +23,8 @@ module iir_order2
 
     reg [bitwidth-1:0] coeffs [0:4];
     initial begin
-        $readmemh(coeffs_file, coeffs);
+        $readmemb(coeffs_file, coeffs);
     end
-
     // Filter Code Here
 
 endmodule
