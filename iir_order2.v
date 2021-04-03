@@ -46,16 +46,16 @@ module iir_order2
 
     reg signed [bitwidth-1:0] z [1:2];
     
-    wire signed [bitwidth-1:0] w1, w2;
+    wire signed [bitwidth-1:0] w[1:2];
 
     // Filter Code
-    assign w1 = -C[3]*z[1] + -C[4]*z[2];
-    assign w2 = C[0]*w1 + C[1]*z[1] + C[2]*z[2];
-    assign y = w2 << 20;
+    assign w[1] = -C[3]*z[1] + -C[4]*z[2];
+    assign w[2] = C[0]*w[1] + C[1]*z[1] + C[2]*z[2];
+    assign y = w[2] << 20;
 
     always @(posedge(clk)) begin
-        z[1] <= w1;
+        z[1] <= w[1];
         z[2] <= z[1];
     end
-    
+
 endmodule
