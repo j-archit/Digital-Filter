@@ -4,6 +4,8 @@
 
     Parameters:
         1. bitwidth     : Width of the Encoded Sequence's Sample (Default, 32)
+        2. coeffs_file  : File Containing 5 filter coefficients in Binary Integer Format
+        
     Inputs:
         1. clk          : Clock Input
         2. x            : Input Stream (Encoded Signal Integer Stream)
