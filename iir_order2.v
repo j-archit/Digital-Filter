@@ -38,7 +38,6 @@ module iir_order2
     input clk,
     input rst,
     input signed [bitwidth-1:0] x,
-    output signed [bitwidth-1:0] yw1,
     output signed [bitwidth-1:0] y
 );
 
@@ -49,8 +48,8 @@ module iir_order2
 
     initial begin
         $readmemb(coeffs_file, C);
-        z[1] = 32'b0;
-        z[2] = 32'b0;
+        z[1] = 64'b0;
+        z[2] = 64'b0;
         //$display("0:b[0] = %d, \n1:b[1] = %d, \n2:b[2] = %d, \n3:a[1] = %d, \n4:a[2] = %d\n", C[0], C[1], C[2], C[3], C[4]);
     end
 
@@ -70,5 +69,4 @@ module iir_order2
             z[2] <= z[1];
         end;
     end
-
 endmodule

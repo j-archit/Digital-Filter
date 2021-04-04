@@ -1,7 +1,6 @@
 import csv
 import codecs
 import matplotlib.pyplot as plt
-import numpy as np
 
 unfil = []
 fil = []
@@ -16,9 +15,6 @@ with codecs.open("output.txt", "r", "utf-16") as f:
             fil.append(int(b))
         except:
             continue
-
-#unfil = np.array(unfil)
-#fil = np.array(fil)
 
 plt.figure()
 plt.subplot(211)

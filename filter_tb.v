@@ -5,17 +5,31 @@ module testbench;
     // Inputs
     reg clk, reset;
     reg signed [31:0] x;
-    wire signed [31:0] yw1;
+    wire signed [31:0] t;
+    wire signed [31:0] t2;
+    wire signed [31:0] t3;
     wire signed [31:0] y;
+
     // Instantiate the Unit Under Test (UUT)
-    iir_order2 DUT(
+    iir_order2 DUT1(
       .clk(clk),
       .rst(reset),
       .x(x),
-      .yw1(yw1),
+      .y(t)
+    );
+    iir_order2 DUT2(
+      .clk(clk),
+      .rst(reset),
+      .x(t),
+      .y(t2)
+    );
+    iir_order2 DUT3(
+      .clk(clk),
+      .rst(reset),
+      .x(t2),
       .y(y)
     );
-
+    
     // Generate clock with 100ns period
     initial clk = 0;
     always #5 clk = ~clk;
