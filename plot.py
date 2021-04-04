@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 unfil = []
 fil = []
 
-with codecs.open("output.txt", "r", "utf-16") as f:
+with codecs.open("output.txt", "r", "utf-8") as f:
     data = csv.reader(f, delimiter = ",")
 
     for row in data:
