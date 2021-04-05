@@ -3,9 +3,15 @@
     Digital Signal Processing - MTE Project
 
     Parameters:
-        1. coeffs_file  : File Containing 5 filter coefficients in Binary Integer Format
-            (0-4 Index corresponds to b0->b2, a1, a2 respectively)
-        2. bitwidth     : Width of the Encoded Sequence's Sample (Default, 32, Optional)
+        1. index        : Section Index in Nth order Filter.
+            (Default, 0)
+            
+            If module is used as Stand Alone, default value is to be used.
+            This Index is used to get Coefficients into Memory using the file with the name "<index>"
+            Index should be in the format "xx" (two digits only)
+
+        2. bitwidth     : Width of the Encoded Sequence's Sample (Optional)
+            (Default, 32)
 
     Inputs:
         1. clk          : Clock Input
@@ -30,10 +36,13 @@
                 |           |           |
                 |----(-a2)------(b2)----| 
 
+    Internal Wires/Registers:
+
+        (0-4 Index corresponds to b0->b2, a1, a2 respectively)
 */
 
-module iir_order2
-#(parameter coeffs_file = "1.txt", parameter bitwidth = 32)
+module iir_2
+#(parameter index = 0,  parameter bitwidth = 32)
 (
     input clk,
     input rst,
@@ -46,11 +55,16 @@ module iir_order2
     reg signed [2*bitwidth-1:0] z [1:2];
     wire signed [2*bitwidth-1:0] w [1:2];
 
+    // For Coeff File derived from Index value
+    reg [2*8:1] cfile = "xx";
+    integer t0, t1;
     initial begin
-        $readmemb(coeffs_file, C);
-        z[1] = {2*bitwidth{1'b0}};
-        z[2] = {2*bitwidth{1'b0}};
-        //$display("0:b[0] = %d, \n1:b[1] = %d, \n2:b[2] = %d, \n3:a[1] = %d, \n4:a[2] = %d\n", C[0], C[1], C[2], C[3], C[4]);
+        t0 = index % 10;
+        t1 = index / 10;
+        cfile[8:1] = "0" + t0;
+        cfile[16:9] = "0" + t1;
+        $readmemb(cfile, C);
+        // $display("Index = %d,\nb[0] = %d, \nb[1] = %d, \nb[2] = %d, \na[1] = %d, \na[2] = %d\n", index, C[0], C[1], C[2], C[3], C[4]);
     end
 
     // Filter Code

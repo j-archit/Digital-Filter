@@ -2,8 +2,9 @@ import csv
 import codecs
 import matplotlib.pyplot as plt
 
-opcolor = '#ffffff'
-opcolor2 = '#44c4d4'
+opcolor = '#000000'
+opcolor2 = '#000000'
+DPI = 300
 
 unfil = []
 fil = []
@@ -34,7 +35,7 @@ ax.set_aspect(0.05)
 plt.plot(unfil, color = opcolor)
 plt.ylabel("Input")
 plt.xlabel("Samples")
-plt.savefig("unf.png", transparent = True, dpi = 1200)
+plt.savefig("unf.png", transparent = True, dpi = DPI)
 
 
 # Filtered Output Sequence
@@ -52,4 +53,4 @@ ax1.set_aspect(0.1)
 plt.plot(fil, color = opcolor)
 plt.ylabel("Filtered Output")
 plt.xlabel("Samples")
-plt.savefig("fil.png", transparent = True, dpi = 1200)
+plt.savefig("fil.png", transparent = True, dpi = DPI)
