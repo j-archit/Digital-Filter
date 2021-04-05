@@ -42,7 +42,7 @@
 */
 
 module iir_2
-#(parameter index = 0,  parameter bitwidth = 32)
+#(parameter index = 0,  parameter bitwidth = 32, parameter fac = 20, parameter gain = 4)
 (
     input clk,
     input rst,
@@ -64,13 +64,13 @@ module iir_2
         cfile[8:1] = "0" + t0;
         cfile[16:9] = "0" + t1;
         $readmemb(cfile, C);
-        // $display("Index = %d,\nb[0] = %d, \nb[1] = %d, \nb[2] = %d, \na[1] = %d, \na[2] = %d\n", index, C[0], C[1], C[2], C[3], C[4]);
+        //$display("Index = %d,\nb[0] = %d, \nb[1] = %d, \nb[2] = %d, \na[1] = %d, \na[2] = %d\n", index, C[0], C[1], C[2], C[3], C[4]);
     end
 
     // Filter Code
-    assign w[1] = ((x <<< 20) - C[3]*z[1] - C[4]*z[2]) >>> 20;
-    assign w[2] = (C[0]*w[1] + C[1]*z[1] + C[2]*z[2]) >>> 20;
-    assign y = w[2] >>> 4;
+    assign w[1] = ((x <<< fac) - C[3]*z[1] - C[4]*z[2]) >>> fac;
+    assign w[2] = (C[0]*w[1] + C[1]*z[1] + C[2]*z[2]) >>> fac;
+    assign y = w[2]  >>> gain;
 
     always @(posedge(clk)) begin
         if(rst == 1) begin
