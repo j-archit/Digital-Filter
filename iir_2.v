@@ -42,7 +42,7 @@
 */
 
 module iir_2
-#(parameter index = 0,  parameter bitwidth = 32, parameter fac = 20, parameter gain = 4)
+#(parameter index = 0,  parameter bitwidth = 32, parameter fac = 20, parameter gain = 6)
 (
     input clk,
     input rst,
@@ -70,7 +70,7 @@ module iir_2
     // Filter Code
     assign w[1] = ((x <<< fac) - C[3]*z[1] - C[4]*z[2]) >>> fac;
     assign w[2] = (C[0]*w[1] + C[1]*z[1] + C[2]*z[2]) >>> fac;
-    assign y = w[2]  >>> gain;
+    assign y = w[2] <<< gain;
 
     always @(posedge(clk)) begin
         if(rst == 1) begin

@@ -9,7 +9,7 @@ module testbench;
     wire signed [31:0] y;
 
     // Instantiate the Unit Under Test (DUT)
-    iir_N #(.N(6)) DUT(
+    iir_N #(.N(4)) DUT(
       .clk(clk),
       .rst(reset),
       .x(x),

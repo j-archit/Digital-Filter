@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 opcolor = '#000000'
 opcolor2 = '#000000'
-aspin = 0.05
+aspin = 0.3
 aspout = 0.1
 DPI = 300
 
@@ -32,7 +32,7 @@ ax.spines['left'].set_color(opcolor2)
 ax.yaxis.label.set_color(opcolor2)
 ax.xaxis.label.set_color(opcolor2)
 ax.tick_params(length = 0, label1On = False, label2On = False)
-ax.set_aspect(aspin)
+#ax.set_aspect(aspin)
 
 plt.plot(unfil, color = opcolor)
 plt.ylabel("Input")
@@ -50,7 +50,7 @@ ax1.spines['left'].set_color(opcolor2)
 ax1.yaxis.label.set_color(opcolor2)
 ax1.xaxis.label.set_color(opcolor2)
 ax1.tick_params(length = 0, label1On = False, label2On = False)
-ax1.set_aspect(aspout)
+#ax1.set_aspect(aspout)
 
 plt.plot(fil, color = opcolor)
 plt.ylabel("Filtered Output")

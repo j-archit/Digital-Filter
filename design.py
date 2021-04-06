@@ -12,32 +12,36 @@ def nbit_bin (a, n = 32):
     return binary
 
 bitwidth = 32
-order = 2
+order = 6
 fac = 2**20
 fs = 48000
-fc = 4800
+fc = 1000
 fc_n = 2*fc/fs
 
-sos = signal.butter(N = order, Wn = fc_n, btype = 'low', output='sos', fs = fs, analog = False)
-# print(sos)
+# This is necessary because the SciPy Library 
+k = signal.butter(N = order, Wn = fc_n, btype = 'low', output='zpk', analog = False)[2]
+print(k)
+sos = signal.butter(N = order, Wn = fc_n, btype = 'low', output='sos', analog = False)
+#print(sos)
 
 # Compute Coefficient as per Required Format and write to File(names as per required format)
 for j, co in enumerate(sos):
     
     f = open(str(int(j/10)) + str(j%10)  , mode = "w")
-    
     line = ""
     dline = ""
     
     for i, val in enumerate(co):
-
-        if i == 3: # Skip the Fourth Coefficient
+        if i < 3:
+            if j == 0 :
+                val =  val / k
+        if i == 3: # Skip the Fourth Coefficient Entirely
             continue
         
         dline = dline + str((val)) + " "
-        line = line + nbit_bin(int(round((val *fac))))[2:] + " "
+        line = line + nbit_bin(int(round((val*fac)))) + " "
     
     print(dline)
-    print(line)
+#    print(line)
     f.write(line)
             
