@@ -11,7 +11,7 @@ DPI = 300
 unfil = []
 fil = []
 
-with codecs.open("output.txt", "r", "utf-8") as f:
+with codecs.open("input", "r", "utf-8") as f:
     data = csv.reader(f, delimiter = ",")
     for row in data:
         try:

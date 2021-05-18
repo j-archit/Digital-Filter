@@ -1,10 +1,10 @@
 /*
     Generalized Nth Order Filter 
-    Implemented Using Second Order Sections.
+    Implemented Using Second Order SECTIONS.
     Parameters: 
         1. N            : Order of the Filter
                           (Default, 2)
-        2. bitwidth     : Bitwidth of Encoded Sequence (Optional)
+        2. BITWIDTH     : BITWIDTH of Encoded Sequence (Optional)
                           (Default, 32)
     Inputs:
         1. clk          : Clock Input
@@ -15,23 +15,23 @@
 */
 
 module iir_N 
-#(parameter N = 2, parameter bitwidth = 32, parameter sections = (N+1)/2)
+#(parameter N = 2, parameter BITWIDTH = 32, parameter SECTIONS = (N+1)/2, parameter FAC = 20)
 (
     input clk,
     input rst,
-    input [bitwidth-1:0] x,
-    output [bitwidth-1:0] y
+    input [BITWIDTH-1:0] x,
+    output [BITWIDTH-1:0] y
 );
 
     // Intermediate Wires
-    wire [bitwidth-1:0] t [0:sections+1];
+    wire [BITWIDTH-1:0] t [0:SECTIONS+1];
     assign t[0] = x;
-    assign y = t[sections];
+    assign y = t[SECTIONS];
 
     genvar i;
     generate
         for (i = 0; i < N; i = i + 2) begin
-            iir_2 #(.index(i/2)) s(.clk(clk), . rst(rst), .x(t[(i/2)]), .y(t[i/2+1]));
+            iir_2 #(.INDEX(i/2), .BITWIDTH(BITWIDTH), .FAC(FAC)) s(.clk(clk), . rst(rst), .x(t[(i/2)]), .y(t[i/2+1]));
         end
     endgenerate
 endmodule

@@ -1,69 +1,59 @@
 `timescale 1ns / 1ps
 
-module tb;
+module testbench;
+
+  // Parameters and Inputs
+  parameter ORDER = 4;
+  parameter SAMPLE_DELAY = 50;
+  parameter BITWIDTH = 32;
+  parameter SHIFT_FAC = 20;
+  parameter HTP = 10; // Half Time Period of Clock
+  
+  reg clk, reset;
+  reg signed [BITWIDTH-1:0] x;
+  wire signed [BITWIDTH-1:0] y;
+
   integer fd,fw;
-  integer i;
   reg [8*45:1] str;
-    // Inputs
-    reg clk, reset;
-    reg signed [31:0] x;
-    wire signed [31:0] t;
-    wire signed [31:0] t2;
-    wire signed [31:0] t3;
-    wire signed [31:0] y;
+  
+  // Instantiate the Unit Under Test (DUT)
+  iir_N #(.N(ORDER), .BITWIDTH(BITWIDTH), .FAC(SHIFT_FAC)) DUT(
+    .clk(clk),
+    .rst(reset),
+    .x(x),
+    .y(y)
+  );
 
-    // Instantiate the Unit Under Test (UUT)
-    iir_order2 DUT1(
-      .clk(clk),
-      .rst(reset),
-      .x(x),
-      .y(t)
-    );
-    iir_order2 DUT2(
-      .clk(clk),
-      .rst(reset),
-      .x(t),
-      .y(y)
-    );
+  // Generate clock with 2*htp period
+  initial clk = 0;
+  always #HTP clk = ~clk;
 
-    // Generate clock with 100ns period
-    initial 
-		begin
-			clk = 0;
-			fw= $fopen("output_file.txt","w");
-		end
-	 always #25 clk = ~clk;
-    
-    always @(posedge(clk)) begin
-			$display("time = %.0f,\t x = %.0f,\t y = %.0f", $time, x, y);
-//			$sformat(str,"x= %.0d,y= %.0d \n",x,y);
-			
-		
-    end
-    
+  initial fw= $fopen("io_samples","w");
 
-    initial begin
-        x = 32'd0;
-        reset = 1;
-        clk = 0;
-        clk = 1;
-        #10;
-        reset = 0;
-        #20;
-		  
-			fd = $fopen("input_file.txt","r");
-			
-			while(!$feof(fd))
-				begin
-				$fscanf(fd, " 	x =               %.0d; #50; // Sample(%.0d)\n",x,i);
-				//$fgets(str,fd);
-				//$display("%.0d",x);
-				#50;
-				$fdisplay(fw,y,x);
-				//$display("x(%.0d) = %.0d",i,x);
-				end
-			$fclose(fd);
-			$fclose(fw);
+  always @(posedge(clk)) begin
+    $display("time = %.0f,\t x = %.0f,\t y = %.0f", $time, x, y);
+  end
+
+  initial begin
+    // Begin Init Sequence
+    x = 32'd0;
+    reset = 1;
+    clk = 0;
+    clk = 1;
+    #10;
+    reset = 0;
+    #20;
+
+    fd = $fopen("input_file.txt","r");
+    while(!$feof(fd))
+      begin
+      $fscanf(fd, "%.0d\n", x);
+      #SAMPLE_DELAY;
       
-    end
+      $fdisplay(fw,y,x);
+      end
+    
+    $fclose(fd);
+    $fclose(fw);    
+  end
 endmodule
