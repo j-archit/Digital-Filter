@@ -1,5 +1,6 @@
 import codecs
 import matplotlib.pyplot as plt
+import csv
 
 opcolor = '#000000'
 opcolor2 = '#000000'
