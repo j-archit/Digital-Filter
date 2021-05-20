@@ -1,7 +1,6 @@
 *.vcd
-output
-output.txt
-output2.txt
+tovvp_output
+vvp_output.txt
 *.png
 *.bat
 [0-9][0-9]
