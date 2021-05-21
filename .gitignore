@@ -1,6 +1,4 @@
 *.vcd
-output
-output.txt
-output2.txt
+vvpin
 *.png
-*.bat
+[0-9][0-9]
