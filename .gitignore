@@ -1,6 +1,5 @@
 *.vcd
-tovvp_output
-vvp_output.txt
+vvpin
 *.png
 *.bat
 [0-9][0-9]

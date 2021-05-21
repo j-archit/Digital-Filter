@@ -4,8 +4,6 @@ from re import findall
 
 opcolor = '#000000'
 opcolor2 = '#000000'
-aspin = 0.3
-aspout = 0.1
 DPI = 300
 
 ip = []
