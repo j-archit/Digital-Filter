@@ -24,7 +24,7 @@ def bilinear(B, A, fs = 1):
     M = max([N, D])
     Bp = [0 for i in range(M + 1)]
     Ap = [0 for i in range(M + 1)]
-
+    
     # Calculate Coeffs for A
     for j in range(0, M + 1):
         val = 0.0

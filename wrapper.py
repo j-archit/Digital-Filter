@@ -8,8 +8,6 @@ import getopt, sys as sys2
 from math import tan, pi
 import bilinear as BLT
 
-from scipy.signal.signaltools import _compute_factors
-
 # Default Design Control Parameters for - Filter and Testbench
 params = {
     # Model Params
@@ -123,17 +121,17 @@ def get_write_filter_coeffs(order, fs, fc, ftype, fac, bitwidth, **extra):
     Return:
         sos (tuple) : Contains the Coefficients in Second Order Sections
     """
-    # fc_n = 2*fc/fs; # Normalised Frequency for Digital Filter
-    # sos = list(signal.butter(N = order, Wn = fc_n, btype = ftype, output='sos', analog = False))
+    fc_n = 2*fc/fs; # Normalised Frequency for Digital Filter
+    sos = list(signal.butter(N = order, Wn = fc_n, btype = ftype, output='sos', analog = False))
 
     # Prewarp Frequency
     warp = 2 * fs * tan(pi * fc / fs)
     sos1 = list(signal.butter(N = order, Wn = warp, btype = ftype, output='sos', analog = True))
-    sos1= BLT.bilinear_sos(sos1, fs)
+    sos1 = BLT.bilinear_sos(sos1, fs)
     
-    # for s in sos: print(list(s))
-    # print("\n")
-    # for s in sos1: print(list(s))
+    for s in sos: print(list(s))
+    print("\n")
+    for s in sos1: print(list(s))
 
     # Compute Coefficient as required from raw values 
     # and write to Files as per required format
@@ -257,15 +255,15 @@ def run():
 # Run Everything
 if __name__ == "__main__":
     getargs(sys2.argv[1:])
-    sys("cls")
+    # sys("cls")
     if not DEV: run()
     else:
         for fc in range(8, 11):
             params["fc"] = fc*1000
-            for order in range(1,6):
+            for order in range(2,11,2):
                 params["order"] = order
                 try: 
                     run()
                 except:
                     continue
-    sys("cls")
+    # sys("cls")
