@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import codecs
 from re import findall
 import getopt, sys as sys2
+from math import tan, pi
+import bilinear as BLT
 
 from scipy.signal.signaltools import _compute_factors
 
@@ -13,8 +15,8 @@ params = {
     # Model Params
     "ftype"     : "low",
     "fs"        : 48000,
-    "fc"        : 2000,
-    "order"     : 1,
+    "fc"        : 10000,
+    "order"     : 4,
     "bitwidth"  : 32,
     "fac"       : 20,
     "gainl"     : 0,
@@ -51,11 +53,11 @@ def norml(k):
     return L
 
 def mse(A,B):
-    E = [a-b for a,b in zip(A,B)]
+    E = [(a-b)/cfac for a,b in zip(A,B)]
     mse = 0
     for e in E:
-        mse = mse + e*e
-    return mse / len(E)
+        mse += e*e
+    return E, mse*(cfac*cfac) / len(E)
 
 def nbit_bin (a, n = 2*params["bitwidth"]):
     """Generate a n-bit binary representation of the input a
@@ -119,28 +121,31 @@ def get_write_filter_coeffs(order, fs, fc, ftype, fac, bitwidth, **extra):
         bitwidth (int)      : Bitwidth for the hardware Implementation
     
     Return:
-        k (float)   : Filter Gain
         sos (tuple) : Contains the Coefficients in Second Order Sections
     """
+    # fc_n = 2*fc/fs; # Normalised Frequency for Digital Filter
+    # sos = list(signal.butter(N = order, Wn = fc_n, btype = ftype, output='sos', analog = False))
+
+    # Prewarp Frequency
+    warp = 2 * fs * tan(pi * fc / fs)
+    sos1 = list(signal.butter(N = order, Wn = warp, btype = ftype, output='sos', analog = True))
+    sos1= BLT.bilinear_sos(sos1, fs)
     
-    fc_n = 2*fc/fs; # Normalised Frequency for Digital Filter
-    
-    sos = list(signal.butter(N = order, Wn = fc_n, btype = ftype, output='sos', analog = False))
-       
+    # for s in sos: print(list(s))
+    # print("\n")
+    # for s in sos1: print(list(s))
+
     # Compute Coefficient as required from raw values 
     # and write to Files as per required format
-    for j, co in enumerate(sos):
+    for j, co in enumerate(sos1):
         f = open(f"{str(int(j/10))}{str(j%10)}", mode = "w")
         line = ""
-        # dline = ""
         for i, val in enumerate(co):
             if i == 3: # Skip the Fourth Coefficient Entirely
                 continue
-            # dline = dline + str((val)) + " "
             line = line + nbit_bin(int(round(( val * (2**fac) ))), 2*bitwidth) + " "
         f.write(line)
-    
-    return sos
+    return sos1
 
 def write_testbench(order, fac, bitwidth, gainl, gainm, htp, **extra):
     vparams = {
@@ -202,7 +207,7 @@ def plot_everything(
     ip = norml(ip)
     op = norml(op)
     soft_filt = norml(soft_filt)
-    MSE = mse(op, soft_filt)
+    E, MSE = mse(op, soft_filt)
 
     # Get Plots
     figure, axs = plt.subplots(2,1, sharex=True, sharey=False)
@@ -248,11 +253,11 @@ def run():
     sys("iverilog -o ivop filter_tb.v iir_N.v iir_2.v")
     sys("vvp ivop > out.txt")
     plot_everything(sos = sos, **params)
-    sys("cls")
 
 # Run Everything
 if __name__ == "__main__":
     getargs(sys2.argv[1:])
+    sys("cls")
     if not DEV: run()
     else:
         for fc in range(8, 11):
@@ -263,3 +268,4 @@ if __name__ == "__main__":
                     run()
                 except:
                     continue
+    sys("cls")

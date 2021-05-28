@@ -4,7 +4,7 @@ module testbench;
 
   // All Parameters and Inputs
   // Params
-  localparam ORDER = 1;
+  localparam ORDER = 4;
   localparam FAC = 20;
   localparam BITWIDTH = 32;
   localparam GAINL = 0;
